@@ -3,26 +3,21 @@ import { ref } from "vue";
 
 const error = ref(null);
 const signIn = async (email, password) => {
- 
-    error.value = null;
+  error.value = null;
 
   try {
-    const res = await projectAuth.signInWithEmailAndPassword(
-      email,
-      password
-    );
+    const res = await projectAuth.signInWithEmailAndPassword(email, password);
 
     if (!res) {
       throw new Error("coudnt complete sign up");
     }
 
     error.value = null;
-   
-    return res;
 
+    return res;
   } catch (err) {
     console.log(err);
-    error.value = "opps ! sorry login failed "
+    error.value = "opps ! sorry login failed ";
   }
 };
 
