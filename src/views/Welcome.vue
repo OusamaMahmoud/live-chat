@@ -1,21 +1,29 @@
 <template>
   <div class="welcome container">
-    <Login v-if="show" />
-    <SignUp v-else />
-    <p class="showToggle" @click="show = !show">{{ show ? "no account yet? Sign Up" : "Already registered ? Log In" }}</p>
+    <Login @login="enterChat" v-if="show" />
+    <SignUp @signup="enterChat" v-else />
+    <p class="showToggle" @click="show = !show">
+      {{ show ? "no account yet? Sign Up" : "Already registered ? Log In" }}
+    </p>
   </div>
 </template>
 
 <script>
 import Login from "@/components/Login.vue";
 import SignUp from "@/components/SignUp.vue";
+import { useRouter } from "vue-router";
 import { ref } from "vue";
 export default {
   components: { SignUp, Login },
   setup() {
+    // toggle between sing up and log in
     const show = ref(true);
+    const router = useRouter();
+    const enterChat = () => {
+      router.push("/chatroom");
+    };
 
-    return { show };
+    return { show, enterChat };
   },
 };
 </script>
@@ -43,7 +51,7 @@ export default {
   color: #999;
   margin: 10px auto;
 }
-.showToggle{
+.showToggle {
   color: dodgerblue;
   text-decoration: underline;
   cursor: pointer;

@@ -1,11 +1,11 @@
 <template>
-        <h1>Sign Up</h1>
+  <h1>Sign Up</h1>
   <form @submit.prevent="handleSubmit">
     <input
       type="text"
       required
       placeholder="display your name"
-      v-model="name"
+      v-model="displayName"
     />
     <input type="email" required placeholder="your email" v-model="email" />
     <input
@@ -15,25 +15,34 @@
       v-model="password"
     />
     <button type="submit">Sign Up</button>
+    <div class="error">{{ error }}</div>
   </form>
 </template>
 
 <script>
 import { ref } from "vue";
+import useSingUp from "../composables/useSignUp";
+
 export default {
-  setup() {
+  setup(props, context) {
     // refs
-    const name = ref("");
+    const displayName = ref("");
     const email = ref("");
     const password = ref("");
 
-    const handleSubmit = () => {
-      console.log(name.value);
-      console.log(email.value);
-      console.log(password.value);
+    const { error, signUp } = useSingUp();
+    const handleSubmit = async () => {
+      await signUp(email.value, password.value, displayName.value);
+
+      displayName.value = "";
+      password.value = "";
+      email.value = "";
+      if (!error.value) {
+        context.emit("signup");
+      }
     };
 
-    return { name, email, password, handleSubmit };
+    return { displayName, email, password, handleSubmit, error };
   },
 };
 </script>
