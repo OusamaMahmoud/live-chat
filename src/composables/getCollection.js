@@ -28,3 +28,5 @@ const getCollection = (collection) => {
 
   return { documents, error };
 };
+
+export default getCollection;
