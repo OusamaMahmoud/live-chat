@@ -1,5 +1,5 @@
 import { projectFirestore } from "@/firebase/config";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 
 const getCollection = (collection) => {
   const documents = ref(null);
@@ -9,8 +9,9 @@ const getCollection = (collection) => {
     .collection(collection)
     .orderBy("createdAt");
 
-  collectionRef.onSnapshot(
+  const unsub = collectionRef.onSnapshot(
     (snap) => {
+      console.log(":snapChanges");
       let results = [];
       snap.docs.forEach((doc) => {
         doc.data().createdAt && results.push({ ...doc.data(), id: doc.id });
@@ -26,6 +27,9 @@ const getCollection = (collection) => {
     }
   );
 
+  watchEffect((onInvalidate) => {
+    onInvalidate(() => unsub());
+  });
   return { documents, error };
 };
 

@@ -18,19 +18,21 @@ export default {
   setup() {
     const message = ref("");
     const { user } = getUser();
-    const { addDoc,error } = useCollection("messages");
+    const { addDoc, error } = useCollection("messages");
 
     const handleSubmit = async () => {
+      if (!message.value) {
+        return;
+      }
       const chat = {
         name: user.value.displayName,
         message: message.value,
         createdAt: timestamp,
       };
 
-
       await addDoc(chat);
-      if(!error.value){
-       message.value = "";
+      if (!error.value) {
+        message.value = "";
       }
     };
 

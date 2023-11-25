@@ -3,9 +3,9 @@
     <div v-if="error">
       {{ error }}
     </div>
-    <div v-if="documents" class="messages">
+    <div v-if="documents" class="messages" ref="chatRef">
       <div v-for="doc in formattedDocuments" :key="doc.id">
-        <span class="created-at">{{ doc.createdAt}}</span>
+        <span class="created-at">{{ doc.createdAt }}</span>
         <span class="name">{{ doc.name }}</span>
         <span class="message">{{ doc.message }}</span>
       </div>
@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, onMounted, onUpdated, ref, watch, watchEffect } from "vue";
 import getCollection from "../composables/getCollection";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 export default {
   setup() {
     const { documents, error } = getCollection("messages");
-
+    const chatRef = ref(null);
     const formattedDocuments = computed(() => {
       if (documents.value) {
         return documents.value.map((doc) => {
@@ -30,8 +30,23 @@ export default {
       }
       return [];
     });
+    const scrollToBottom = () => {
+      const container = chatRef.value;
+      if (documents.value) {
+        // one way
+        container.scrollTo({
+          top: container.scrollHeight ,
+          behavior: "smooth",
+        });
+        // second way
+        // container.scrollTop = container.scrollHeight;
+      }
+    };
+    onUpdated(() => {
+      scrollToBottom();
+    });
 
-    return { documents, error ,formattedDocuments};
+    return { documents, error, formattedDocuments, chatRef };
   },
 };
 </script>

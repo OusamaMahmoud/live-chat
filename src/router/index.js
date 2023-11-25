@@ -5,7 +5,7 @@ import { projectAuth } from "@/firebase/config";
 
 // route guards
 
-const requireForEnter = (to, from, next) => {
+const requireAuth = (to, from, next) => {
   const user = projectAuth.currentUser;
   if (!user) {
     next({ name: "welcome" });
@@ -14,17 +14,26 @@ const requireForEnter = (to, from, next) => {
   }
 };
 
+const requireNoAuth = (to, from, next) => {
+  const user = projectAuth.currentUser;
+  if (user) {
+    next({ name: "Chatroom" });
+  } else {
+    next();
+  }
+};
 const routes = [
   {
     path: "/",
     name: "welcome",
     component: Welcome,
+    beforeEnter: requireNoAuth,
   },
   {
     path: "/chatroom",
     name: "Chatroom",
     component: Chatroom,
-    beforeEnter:requireForEnter,
+    beforeEnter: requireAuth,
   },
 ];
 
